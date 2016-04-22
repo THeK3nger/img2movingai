@@ -1,4 +1,5 @@
 import itertools
+import random
 
 class MovingAIMap(object):
 
@@ -23,6 +24,9 @@ class MovingAIMap(object):
                 self._parse_keys(values)
 
     def _parse_keys(self, values):
+        if values[0] == '$key$':
+            # Template, skip it.
+            return
         values = [int(v) for v in values]  # Convert all to integers.
         pairs = list(pairwise(values))
         self.doors[pairs[0]] = pairs[1:]
@@ -49,6 +53,16 @@ class MovingAIMap(object):
             for k, v in self.doors.items():
                 if (r,c) in v:
                     return k
+
+    def all_free(self):
+        lis= [(c,r) for c in range(self.width) for r in range(self.height) if self.is_free(r,c)]
+        return lis
+
+    def random_free(self):
+        """
+        Return a random free tile in the map.
+        """
+        return random.sample(list(self.all_free()), 1) # TODO: Very inefficient.
 
     def __str__(self):
         result = "Moving AI Map\n"

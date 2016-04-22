@@ -3,6 +3,8 @@
 # @version 1.0.0
 
 import sys
+import re
+import random
 
 from PIL import Image
 
@@ -27,6 +29,8 @@ def color_to_char(color):
     """
     Map each pixel color to a particular map tile.
     """
+    # Trim to RGB
+    color = (color[0], color[1], color[2])
     if color == color_map['WALL']:
         return "@"
     if color == color_map['FREE']:
@@ -94,6 +98,31 @@ def img2movingai(filename, output=None):
             line += "\n"
             f.write(line)
 
+def instantiate_template(template_file):
+    """
+    Takes a template map and replace `$key$` with random keys.
+    @param template_file: the path to the template file.
+    """
+    all_map = ''
+    keys_num = 0
+
+    parsed_map = parse_map(template_file)
+
+    with open(template_file, 'r') as f:
+        all_map = f.read()
+        keys_num = all_map.count('$key')
+        all_map = re.sub(r"\$key\$",r"{}",all_map)
+
+    def random_free():
+        rnd = parsed_map.random_free()
+        return rnd[0]
+
+    # Generate random keys.
+    keys = [ "{} {}".format(*random_free()) for _ in range(keys_num)]
+
+    with open(template_file + ".inst.map", 'w') as f:
+        f.write(all_map.format(*keys))
+
 def movingai2img(filename, output=None):
     """
     Convert a MovingAI map file into a PNG image.
@@ -114,7 +143,10 @@ def movingai2img(filename, output=None):
 if __name__ == '__main__':
     filename = sys.argv[1]
     is_reversed = len(sys.argv) > 2 and sys.argv[2] == '-R'
-    if not is_reversed:
-        img2movingai(filename)
-    else:
+    templating = len(sys.argv) > 2 and sys.argv[2] == '-T'
+    if is_reversed:
         movingai2img(filename)
+    elif templating:
+        instantiate_template(filename)
+    else:
+        img2movingai(filename)

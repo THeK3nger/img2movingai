@@ -49,6 +49,18 @@ def char_to_color(char):
     # Any other char is a wall.
     return color_map['WALL']
 
+def color_to_key_or_door(color):
+    """
+    A key is any other  color (r,g,42) that open any door (42,g,b).
+    """
+    pass
+
+def find_doors(image, size):
+    width, height = size
+    return [ (x,y) for x in range(width)
+             for y in range(height)
+             if image[x,y][0] == 42]
+
 def img2movingai(filename, output=None):
     """
     The main algorithm.
@@ -61,10 +73,18 @@ def img2movingai(filename, output=None):
 
     width, height = img.size
 
+    doors = find_doors(img_matrix, (width, height))
+    print(doors)
+    key_door_template = ''
+    if len(doors) > 0:
+        for d in doors:
+            key_door_template += "key $key$ {} {}\n".format(d[0], d[1])
+
     with open(output, 'w') as f:
         f.write("type octile\n")
         f.write("height " + str(height) + "\n")
         f.write("width " + str(width) + "\n")
+        f.write(key_door_template)
         f.write("map\n")
 
         for y in range(height):

@@ -94,7 +94,10 @@ def img2movingai(filename, output=None):
         for y in range(height):
             line = ""
             for x in range(width):
-                line += color_to_char(img_matrix[x,y])
+                if (x,y) in doors:
+                    line += '.'
+                else:
+                    line += color_to_char(img_matrix[x,y])
             line += "\n"
             f.write(line)
 

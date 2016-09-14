@@ -3,3 +3,5 @@
 *.png
 /__pycache__/movingaiparser.cpython-35.pyc
 *.bmp
+.vscode
+*.pyc*

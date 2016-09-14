@@ -1,6 +1,7 @@
 import itertools
 import random
 
+
 class MovingAIMap(object):
 
     def __init__(self, header, map_matrix):
@@ -51,18 +52,19 @@ class MovingAIMap(object):
             r, c = r
         if self.is_door(r, c):
             for k, v in self.doors.items():
-                if (r,c) in v:
+                if (r, c) in v:
                     return k
 
     def all_free(self):
-        lis= [(c,r) for c in range(self.width) for r in range(self.height) if self.is_free(r,c)]
+        lis = [(c, r) for c in range(self.width)
+               for r in range(self.height) if self.is_free(r, c)]
         return lis
 
     def random_free(self):
         """
         Return a random free tile in the map.
         """
-        return random.sample(list(self.all_free()), 1) # TODO: Very inefficient.
+        return random.sample(list(self.all_free()), 1)  # TODO: Very inefficient.
 
     def __str__(self):
         result = "Moving AI Map\n"
@@ -78,7 +80,8 @@ def parse_map(map_path):
     raw_map = map_file.read()
     raw_map_lines = raw_map.split('\n')
     header = list(itertools.takewhile(lambda l: l != "map", raw_map_lines))
-    map_matrix = list(itertools.dropwhile(lambda l: l != "map", raw_map_lines))[1:]
+    map_matrix = list(itertools.dropwhile(
+        lambda l: l != "map", raw_map_lines))[1:]
     return MovingAIMap(header, map_matrix)
 
 
@@ -86,4 +89,3 @@ def pairwise(iterable):
     return zip(iterable[::2], iterable[1::2])
 
 #######################################################
-

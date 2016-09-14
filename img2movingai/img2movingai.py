@@ -8,7 +8,7 @@ import random
 
 from PIL import Image
 
-from movingaiparser import parse_map
+from img2movingai.movingaiparser import parse_map
 
 color_map = {
     'WALL': (0, 0, 0),
@@ -142,8 +142,7 @@ def movingai2img(filename, output=None):
             output_image.putpixel((x,y), char_to_color(parsed_map.matrix[y][x]))
     output_image.save(output)
 
-
-if __name__ == '__main__':
+def main():
     filename = sys.argv[1]
     is_reversed = len(sys.argv) > 2 and sys.argv[2] == '-R'
     templating = len(sys.argv) > 2 and sys.argv[2] == '-T'
@@ -153,3 +152,6 @@ if __name__ == '__main__':
         instantiate_template(filename)
     else:
         img2movingai(filename)
+
+if __name__ == '__main__':
+    main()
